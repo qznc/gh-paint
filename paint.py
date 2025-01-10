@@ -5,6 +5,7 @@ COMMIT_COUNTER = 1
 FILENAME = "dummy.txt"
 BRANCH = "gh-paint"
 YEAR = 2024
+
 width = 52
 height = 7
 with open("gh.data", "br") as fh:
