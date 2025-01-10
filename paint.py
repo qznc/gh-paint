@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 COMMIT_COUNTER = 1
 FILENAME = "dummy.txt"
 BRANCH = "gh-paint"
+YEAR = 2024
+
 width = 52
 height = 7
 with open("gh.data", "br") as fh:
@@ -25,17 +27,16 @@ def create_commit(date):
     run(["git", "commit", "-m", f"Commit for {date}", "--date", commit_date])
 
 
-def date_range_past_year():
-    today = datetime.now().date()
-    start_date = today - timedelta(days=width * height)
+def commit_dates():
+    current_year = datetime.now().year
+    first_day_of_last_year = datetime(current_year - 1, 1, 1)
+    cur = first_day_of_last_year
+    while cur.year < current_year:
+        yield cur
+        cur += timedelta(days=1)
 
-    current_date = start_date
-    while current_date <= today:
-        yield current_date
-        current_date += timedelta(days=1)
 
-
-def handle_date(i, date):
+def do_date(i, date):
     x = i // 7
     y = i % 7
     pixel = data[y * width + x] // 16
@@ -45,8 +46,8 @@ def handle_date(i, date):
 
 run(["git", "checkout", "-b", BRANCH])
 i = -1
-for date in date_range_past_year():
+for date in commit_dates():
     if i >= 0 or date.isoweekday() == 7:
         i += 1
-        handle_date(i, date)
+        do_date(i, date)
         # break # DEV
